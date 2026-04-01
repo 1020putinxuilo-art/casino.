@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ULTRA CASINO 3D</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    body { margin:0; background:#0a001f; color:#fff; font-family:Arial; text-align:center; overflow:hidden; }
+    canvas { display:block; }
+    .neon { text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; }
+    button { background:#ff00aa; color:#000; border:none; padding:15px 30px; font-size:20px; border-radius:50px; margin:10px; cursor:pointer; box-shadow:0 0 20px #ff00ff; }
+  </style>
+</head>
+<body>
+  <h1 class="neon">🎰 ULTRA CASINO 3D</h1>
+  <div id="info">Баланс: <span id="balance">5000</span>₽</div>
+  
+  <button onclick="Telegram.WebApp.sendData('play_blackjack')">🃏 Играть в 3D Блэкджек</button>
+  <button onclick="Telegram.WebApp.close()">❌ Закрыть</button>
+
+  <script>
+    // Telegram Mini App
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+    Telegram.WebApp.MainButton.setText("Вернуться в бот").show();
+
+    // Простая 3D-сцена (вращающаяся карта)
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Пример 3D-карты (можно заменить на свою текстуру)
+    const geometry = new THREE.PlaneGeometry(4, 5.5);
+    const material = new THREE.MeshBasicMaterial({color: 0xff00ff, side: THREE.DoubleSide});
+    const card = new THREE.Mesh(geometry, material);
+    scene.add(card);
+    camera.position.z = 8;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      card.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Пример получения данных от бота
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.balance) {
+        document.getElementById('balance').innerText = event.data.balance;
+      }
+    });
+  </script>
+</body>
+</html>
